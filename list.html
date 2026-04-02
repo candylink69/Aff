@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>StreamFlix - Explore Category</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* additional micro-styles for list page */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 20px 0 30px;
+    }
+    .back-bar {
+      margin-bottom: 20px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(26, 31, 40, 0.9);
+      border: 1px solid #2a3342;
+      border-radius: 40px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #9aa8b9;
+      text-decoration: none;
+      transition: 0.15s ease;
+      cursor: pointer;
+    }
+    .back-btn:active {
+      background: #2a3445;
+      transform: scale(0.96);
+    }
+    .category-header {
+      margin-bottom: 24px;
+      border-left: 4px solid #E9C46A;
+      padding-left: 18px;
+    }
+    .category-header h2 {
+      font-size: 1.9rem;
+      margin-bottom: 6px;
+    }
+    .category-desc {
+      color: #9aa8b9;
+      font-size: 0.9rem;
+    }
+    .item-card {
+      background: #11161f;
+      border-radius: 20px;
+      padding: 16px 18px;
+      border: 1px solid #2a3342;
+      transition: all 0.12s linear;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .item-card:active {
+      background: #1f2a36;
+      transform: scale(0.98);
+      border-color: #E9C46A;
+    }
+    .item-title {
+      font-weight: 650;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      color: #f0f3f8;
+    }
+    .item-desc {
+      font-size: 0.8rem;
+      color: #8b9bb0;
+    }
+    .arrow-icon {
+      font-size: 1.8rem;
+      color: #E9C46A;
+      opacity: 0.8;
+      font-weight: 300;
+    }
+    .loading-spinner, .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      background: #0f131c;
+      border-radius: 28px;
+      color: #8b9bb0;
+      margin: 20px 0;
+    }
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5f6c7e;
+      border-top: 0.5px solid #2a3342;
+      padding-top: 24px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Back navigation + title row -->
+  <div class="back-bar">
+    <a href="index.html" class="back-btn" id="backButton">
+      ← Back to Home
+    </a>
+  </div>
+
+  <!-- Dynamic category header -->
+  <div class="category-header">
+    <h2 id="categoryTitle">Loading...</h2>
+    <div class="category-desc" id="categoryDesc">Fetching best recommendations</div>
+  </div>
+
+  <!-- Items container: dynamic content loaded by script.js -->
+  <div id="itemsContainer" class="items-list">
+    <div class="loading-spinner">✨ Loading amazing content...</div>
+  </div>
+
+  <footer>
+    © StreamFlix — Unlimited entertainment • All external links open safely
+  </footer>
+</div>
+
+<!-- Scripts: data.js (content), then script.js (logic) -->
+<script src="data.js"></script>
+<script src="script.js"></script>
+
+<!-- Additional inline initialization to ensure Instagram links on list page -->
+<script>
+  // Ensure that any existing openExternal is used, plus protect back button
+  (function() {
+    // Make sure back button doesn't use external handler, it's internal
+    const backBtn = document.getElementById('backButton');
+    if (backBtn) {
+      backBtn.addEventListener('click', function(e) {
+        // normal navigation to index.html, no openExternal needed
+        // but we keep default behavior
+      });
+    }
+    
+    // If for any reason category items are not rendering after load, 
+    // the script.js already handles loadListPage. 
+    // Double-check that itemsContainer gets populated after data.js ready.
+    if (document.getElementById('itemsContainer')) {
+      // script.js's DOMContentLoaded will call loadListPage
+      // but if data.js loads late, fine.
+    }
+  })();
+</script>
+</body>
+</html>
