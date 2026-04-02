@@ -2,153 +2,237 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>StreamFlix - Explore Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Category Products | DealBazaar</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* additional micro-styles for list page */
-    .items-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin: 20px 0 30px;
+    /* additional inline styles for slider functionality and smoothness */
+    .slider-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
-    .back-bar {
-      margin-bottom: 20px;
+    .slider-img.active {
+      opacity: 1;
     }
-    .back-btn {
+    .product-image-slider {
+      position: relative;
+      background: #0a0a0a;
+    }
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      color: white;
+      border: none;
+      font-size: 1.3rem;
+      padding: 0.4rem 0.7rem;
+      cursor: pointer;
+      border-radius: 2rem;
+      z-index: 10;
+      font-weight: bold;
+      transition: 0.1s;
+    }
+    .slider-btn:active {
+      background: rgba(0,0,0,0.9);
+    }
+    .no-products {
+      text-align: center;
+      padding: 3rem;
+      background: #0c0c0c;
+      border-radius: 1.5rem;
+      color: #aaa;
+    }
+    .back-link {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(26, 31, 40, 0.9);
-      border: 1px solid #2a3342;
-      border-radius: 40px;
-      padding: 10px 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #9aa8b9;
+      gap: 0.3rem;
+      background: #1a1a1a;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
       text-decoration: none;
-      transition: 0.15s ease;
-      cursor: pointer;
-    }
-    .back-btn:active {
-      background: #2a3445;
-      transform: scale(0.96);
-    }
-    .category-header {
-      margin-bottom: 24px;
-      border-left: 4px solid #E9C46A;
-      padding-left: 18px;
-    }
-    .category-header h2 {
-      font-size: 1.9rem;
-      margin-bottom: 6px;
-    }
-    .category-desc {
-      color: #9aa8b9;
+      color: white;
       font-size: 0.9rem;
-    }
-    .item-card {
-      background: #11161f;
-      border-radius: 20px;
-      padding: 16px 18px;
-      border: 1px solid #2a3342;
-      transition: all 0.12s linear;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .item-card:active {
-      background: #1f2a36;
-      transform: scale(0.98);
-      border-color: #E9C46A;
-    }
-    .item-title {
-      font-weight: 650;
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-      color: #f0f3f8;
-    }
-    .item-desc {
-      font-size: 0.8rem;
-      color: #8b9bb0;
-    }
-    .arrow-icon {
-      font-size: 1.8rem;
-      color: #E9C46A;
-      opacity: 0.8;
-      font-weight: 300;
-    }
-    .loading-spinner, .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      background: #0f131c;
-      border-radius: 28px;
-      color: #8b9bb0;
-      margin: 20px 0;
-    }
-    footer {
-      margin-top: 48px;
-      text-align: center;
-      font-size: 0.7rem;
-      color: #5f6c7e;
-      border-top: 0.5px solid #2a3342;
-      padding-top: 24px;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <!-- Back navigation + title row -->
-  <div class="back-bar">
-    <a href="index.html" class="back-btn" id="backButton">
-      ← Back to Home
-    </a>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Home</a>
+    
+    <div id="categoryHeader" class="category-header">
+      <h1 id="categoryTitle">Loading...</h1>
+      <p id="categoryCaption" class="category-caption"></p>
+    </div>
+
+    <div id="productsContainer" class="products-grid">
+      <div class="loader">Loading products...</div>
+    </div>
   </div>
 
-  <!-- Dynamic category header -->
-  <div class="category-header">
-    <h2 id="categoryTitle">Loading...</h2>
-    <div class="category-desc" id="categoryDesc">Fetching best recommendations</div>
-  </div>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Helper: get URL parameter
+    function getCategoryFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('category');
+    }
 
-  <!-- Items container: dynamic content loaded by script.js -->
-  <div id="itemsContainer" class="items-list">
-    <div class="loading-spinner">✨ Loading amazing content...</div>
-  </div>
+    // Load categories.json to get title & caption for current category
+    async function loadCategoryInfo(categoryId) {
+      try {
+        const response = await fetch('categories.json');
+        if (!response.ok) throw new Error('Failed to load categories');
+        const categories = await response.json();
+        const category = categories.find(cat => cat.id === categoryId);
+        if (category) {
+          document.getElementById('categoryTitle').innerText = category.title;
+          document.getElementById('categoryCaption').innerText = category.caption;
+        } else {
+          document.getElementById('categoryTitle').innerText = categoryId || 'Unknown';
+          document.getElementById('categoryCaption').innerText = 'Products you might like';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('categoryTitle').innerText = categoryId || 'Category';
+        document.getElementById('categoryCaption').innerText = 'Check out these deals';
+      }
+    }
 
-  <footer>
-    © StreamFlix — Unlimited entertainment • All external links open safely
-  </footer>
-</div>
+    // Render products for given category using data.js
+    function renderProducts(categoryId) {
+      const container = document.getElementById('productsContainer');
+      if (!container) return;
 
-<!-- Scripts: data.js (content), then script.js (logic) -->
-<script src="data.js"></script>
-<script src="script.js"></script>
+      if (!categoryId) {
+        container.innerHTML = '<div class="no-products">No category selected.</div>';
+        return;
+      }
 
-<!-- Additional inline initialization to ensure Instagram links on list page -->
-<script>
-  // Ensure that any existing openExternal is used, plus protect back button
-  (function() {
-    // Make sure back button doesn't use external handler, it's internal
-    const backBtn = document.getElementById('backButton');
-    if (backBtn) {
-      backBtn.addEventListener('click', function(e) {
-        // normal navigation to index.html, no openExternal needed
-        // but we keep default behavior
+      // Filter products from global products array (data.js)
+      const filtered = products.filter(p => p.category === categoryId);
+      
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="no-products">No products found in this category. 😢</div>';
+        return;
+      }
+
+      // Build product cards with image slider
+      container.innerHTML = '';
+      filtered.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        // Create slider HTML with multiple images
+        let sliderHtml = `
+          <div class="product-image-slider" data-product-id="${product.id}">
+            <div class="slider-images">
+        `;
+        
+        product.images.forEach((img, idx) => {
+          const activeClass = idx === 0 ? 'active' : '';
+          sliderHtml += `<img src="${img}" class="slider-img ${activeClass}" alt="${product.title}" loading="lazy" onerror="this.src='https://placehold.co/400x400/222/fff?text=No+Image'">`;
+        });
+        
+        sliderHtml += `
+            </div>
+            <button class="slider-btn slider-prev" data-id="${product.id}">‹</button>
+            <button class="slider-btn slider-next" data-id="${product.id}">›</button>
+          </div>
+          <div class="product-info">
+            <div class="product-title">${escapeHtml(product.title)}</div>
+            <div class="product-tag">${escapeHtml(product.tag)}</div>
+            <button class="buy-btn external-link" data-url="${escapeAttr(product.link)}">Buy Now 🚀</button>
+          </div>
+        `;
+        
+        card.innerHTML = sliderHtml;
+        container.appendChild(card);
+      });
+
+      // Initialize slider functionality for each product card
+      initSliders();
+      
+      // Attach openExternal to buy buttons that were just created
+      attachExternalLinks();
+    }
+
+    // Image slider logic
+    function initSliders() {
+      const productCards = document.querySelectorAll('.product-card');
+      productCards.forEach(card => {
+        const sliderContainer = card.querySelector('.product-image-slider');
+        if (!sliderContainer) return;
+        const productId = sliderContainer.getAttribute('data-product-id');
+        const images = sliderContainer.querySelectorAll('.slider-img');
+        if (images.length <= 1) {
+          // hide buttons if only one image
+          const btns = sliderContainer.querySelectorAll('.slider-btn');
+          btns.forEach(btn => btn.style.display = 'none');
+          return;
+        }
+        
+        let currentIndex = 0;
+        const prevBtn = sliderContainer.querySelector('.slider-prev');
+        const nextBtn = sliderContainer.querySelector('.slider-next');
+        
+        function showImage(index) {
+          images.forEach((img, i) => {
+            if (i === index) img.classList.add('active');
+            else img.classList.remove('active');
+          });
+        }
+        
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          showImage(currentIndex);
+        });
+        
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIndex = (currentIndex + 1) % images.length;
+          showImage(currentIndex);
+        });
+      });
+    }
+
+    // Simple escaping
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
       });
     }
     
-    // If for any reason category items are not rendering after load, 
-    // the script.js already handles loadListPage. 
-    // Double-check that itemsContainer gets populated after data.js ready.
-    if (document.getElementById('itemsContainer')) {
-      // script.js's DOMContentLoaded will call loadListPage
-      // but if data.js loads late, fine.
+    function escapeAttr(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
-  })();
-</script>
+
+    // Main execution
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryId = getCategoryFromURL();
+      if (categoryId) {
+        loadCategoryInfo(categoryId);
+        renderProducts(categoryId);
+      } else {
+        document.getElementById('categoryHeader').innerHTML = '<h1>No category selected</h1>';
+        document.getElementById('productsContainer').innerHTML = '<div class="no-products">Please go back and select a category.</div>';
+      }
+    });
+  </script>
 </body>
 </html>
