@@ -1,0 +1,64 @@
+{
+  "categories": [
+    {
+      "id": "action",
+      "name": "Action",
+      "emoji": "⚡",
+      "description": "High-octane movies & thrilling fight scenes"
+    },
+    {
+      "id": "romance",
+      "name": "Romance",
+      "emoji": "💖",
+      "description": "Heartfelt love stories and romantic dramas"
+    },
+    {
+      "id": "thriller",
+      "name": "Thriller",
+      "emoji": "🔪",
+      "description": "Suspenseful, psychological, edge-of-seat content"
+    },
+    {
+      "id": "comedy",
+      "name": "Comedy",
+      "emoji": "😂",
+      "description": "Laughter guaranteed, sitcoms & standup specials"
+    },
+    {
+      "id": "drama",
+      "name": "Drama",
+      "emoji": "🎭",
+      "description": "Powerful narratives and emotional journeys"
+    },
+    {
+      "id": "scifi",
+      "name": "Sci-Fi",
+      "emoji": "🛸",
+      "description": "Futuristic worlds, aliens, and advanced tech"
+    },
+    {
+      "id": "horror",
+      "name": "Horror",
+      "emoji": "👻",
+      "description": "Terrifying tales and supernatural suspense"
+    },
+    {
+      "id": "crime",
+      "name": "Crime",
+      "emoji": "🚔",
+      "description": "Gangsters, detectives, and heist thrillers"
+    },
+    {
+      "id": "anime",
+      "name": "Anime",
+      "emoji": "🇯🇵",
+      "description": "Japanese animation, epic series & movies"
+    },
+    {
+      "id": "bollywood",
+      "name": "Bollywood",
+      "emoji": "🎬",
+      "description": "Hindi blockbusters and exclusive stories"
+    }
+  ]
+}
