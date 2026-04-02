@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>PrimeStream Nexus</title>
+  <!-- No external styles here — style.css will be added later -->
+  <style>
+    /* minimal inline reset just for structure, full design in style.css later */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #0a0c10;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      padding: 0 0 40px 0;
+      color: #f0f3f8;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+    /* ensure categories grid visible */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .hero-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 28px 0 32px;
+    }
+    .btn-premium {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #1e2a3a 0%, #0f1722 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 28px;
+      padding: 18px 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+      color: #FFE6A7;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    }
+    .btn-premium:active {
+      transform: scale(0.97);
+      background: linear-gradient(135deg, #111a24 0%, #0a0f16 100%);
+    }
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin: 12px 0 6px 0;
+      letter-spacing: -0.3px;
+    }
+    .sub {
+      color: #9aa8b9;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    .category-card {
+      background: rgba(20, 25, 35, 0.8);
+      backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 18px 8px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 1px solid #2a3342;
+      transition: 0.1s linear;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: #f0f3f8;
+    }
+    .category-card:active {
+      background: #2a3445;
+      transform: scale(0.97);
+    }
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 28px 0 12px 0;
+    }
+    .badge {
+      font-size: 0.75rem;
+      background: #2c3e4e;
+      padding: 4px 10px;
+      border-radius: 40px;
+    }
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5f6c7e;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Top section: visible without scroll (safe title) -->
+  <div style="text-align: center; margin-top: 6px;">
+    <h1 style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #E9C46A, #F4A261); -webkit-background-clip: text; background-clip: text; color: transparent;">StreamFlix</h1>
+    <div class="sub">Premium entertainment hub</div>
+  </div>
+
+  <!-- TWO BIG premium buttons -->
+  <div class="hero-buttons">
+    <a href="https://candylink69.vercel.app" class="btn-premium" id="movieBtn">
+      🎬 Watch Full Movies & Videos Online
+    </a>
+    <a href="https://antarvasana69.vercel.app" class="btn-premium" id="storyBtn">
+      📖 Exclusive Hindi Stories
+    </a>
+  </div>
+
+  <!-- Categories section -->
+  <div class="section-title">
+    <h2>Explore by category</h2>
+    <span class="badge">🔥 trending</span>
+  </div>
+  <div class="categories-grid" id="categoriesGrid">
+    <!-- Categories will be dynamically loaded from categories.json (later via script.js) -->
+    <!-- But for initial display we show placeholder categories that will be replaced by real data -->
+    <div class="category-card" data-id="action">⚡ Action</div>
+    <div class="category-card" data-id="romance">💖 Romance</div>
+    <div class="category-card" data-id="thriller">🔪 Thriller</div>
+    <div class="category-card" data-id="comedy">😂 Comedy</div>
+    <div class="category-card" data-id="drama">🎭 Drama</div>
+    <div class="category-card" data-id="scifi">🛸 Sci-Fi</div>
+  </div>
+  <footer>
+    © StreamFlix — endless entertainment
+  </footer>
+</div>
+
+<!-- script.js will be added later, but we need basic openExternal ready -->
+<script>
+  // basic placeholder for external linking (full openExternal logic will be inside script.js)
+  // but we predefine necessary functions so links work immediately with Instagram intent logic
+  function isInstagram() {
+    return /Instagram|FBAN|FBAV/i.test(navigator.userAgent);
+  }
+
+  function openExternal(url) {
+    if (isInstagram()) {
+      const clean = url.replace(/^https?:\/\//, '');
+      window.location.href = "intent://" + clean + "#Intent;scheme=https;end";
+    } else {
+      window.location.href = url;
+    }
+  }
+
+  // override both button clicks to use openExternal and prevent default
+  document.addEventListener('DOMContentLoaded', function() {
+    const movieBtn = document.getElementById('movieBtn');
+    const storyBtn = document.getElementById('storyBtn');
+    
+    if (movieBtn) {
+      movieBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openExternal('https://candylink69.vercel.app');
+      });
+    }
+    if (storyBtn) {
+      storyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openExternal('https://antarvasana69.vercel.app');
+      });
+    }
+    
+    // category click: redirect to list.html?category=categoryId
+    const categoryCards = document.querySelectorAll('.category-card');
+    categoryCards.forEach(card => {
+      card.addEventListener('click', function() {
+        let catId = this.getAttribute('data-id');
+        if (!catId) catId = this.innerText.trim().toLowerCase().replace(/[^a-z]/g, '');
+        window.location.href = `list.html?category=${encodeURIComponent(catId)}`;
+      });
+    });
+  });
+</script>
+</body>
+</html>
